@@ -20,3 +20,7 @@ Here are my implementation of some useful solvers for mainly optimization proble
     - Algorithm: Projected Gradient Descent
 - [x] Non-negative quadratic programming solver ([MATLAB](./MATLAB/pgd_quadprog.m))
     - Algorithm: Projected Gradient Descent
+- [x] Non-negative quadratic programming solver ([MATLAB](./MATLAB/multipupd_quadprognonneg.m))
+    - Algorithm: Multiplicative update
+
+**NOTE: Fixed-point iteration may not converge. You'll receive a warning message when using solvers based on this algorithm.**
