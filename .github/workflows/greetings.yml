@@ -13,4 +13,4 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         issue-message: "Thanks for your issue, and hope you have a nice day by the way!"
-        pr-message: "Thank you for your contribution! I'll check it as soon as possible."
+        pr-message: "Thank you for your contribution!"
