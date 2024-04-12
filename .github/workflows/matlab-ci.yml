@@ -32,7 +32,7 @@ jobs:
       - name: Open MATLAB project
         uses: matlab-actions/run-command@v2
         with:
-          command: openProject('solvers.prj');
+          command: openProject('MATLAB/Solvers.prj');
 
       # Runs a set of commands using the runners shell
       - name: Run all tests
