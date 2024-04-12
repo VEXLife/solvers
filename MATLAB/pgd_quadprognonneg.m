@@ -1,4 +1,4 @@
-function [x, feval] = pgd_quadprognonneg(Q, b, options)
+function [x, feval, history, stop_iter] = pgd_quadprognonneg(Q, b, options)
     %% Use Projected Gradient Descent to solve the non-negative quadratic programming problem
     % Author: Midden Vexu
     % Reference: https://angms.science/doc/NMF/nnls_pgd.pdf
@@ -43,6 +43,10 @@ function [x, feval] = pgd_quadprognonneg(Q, b, options)
     y = options.x0;
     feval_fun = @(x) 0.5 * x' * Q * x + b' * x;
     previous_feval = feval_fun(x);
+    history.x = cell(1, options.MaxIterations + 1);
+    history.feval = cell(1, options.MaxIterations + 1);
+    history.x{1} = x;
+    history.feval{1} = previous_feval;
     if options.verbose
         fprintf('Before any iteration, Loss: %f\n', previous_feval);
     end
@@ -52,6 +56,8 @@ function [x, feval] = pgd_quadprognonneg(Q, b, options)
         x = max(options.LowerBound, theta1 * y + theta2);
         y = x + (i - 1) / (i + 2) * (x - previous_x);
         feval = feval_fun(x);
+        history.x{i + 1} = x;
+        history.feval{i + 1} = feval;
         
         if abs(feval - previous_feval) < options.OptimalityTolerance
             stop_reason = 'The loss difference is smaller than the optimality tolerance.';
@@ -64,6 +70,8 @@ function [x, feval] = pgd_quadprognonneg(Q, b, options)
             x = max(options.LowerBound, theta1 * previous_x + theta2);
             y = x; % Restart y from x
             feval = feval_fun(x);
+            history.x{i + 1} = x;
+            history.feval{i + 1} = feval;
         end
         previous_feval = feval;
         
@@ -78,6 +86,7 @@ function [x, feval] = pgd_quadprognonneg(Q, b, options)
         end
         fprintf('Stopped after %d iterations because:\n%s\nFinal loss: %f\n', i, stop_reason, feval);
     end
-    end % of function
+    stop_iter = i;
+end % of function
     
     

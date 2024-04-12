@@ -1,4 +1,4 @@
-function [x, feval] = bisection_fsolve(f, x0, options)
+function [x, feval, history, stop_iter] = bisection_fsolve(f, x0, options)
     %% Use the bisection method to solve a scalar equation f(x) = 0
     % Author: Midden Vexu
     % **WARNING**: This function does not calculate the derivative of the function,
@@ -34,21 +34,28 @@ function [x, feval] = bisection_fsolve(f, x0, options)
     assert(f(x_min) * f(x_max) < 0, 'The function does not change sign in the guess range, meaning there may be no solutions in the range.');
     x = x0;
     stop_reason = 'Unexpected stop';
-
     right_sign = sign(f(x_max));
+
+    feval = f(x);
+    history.x = cell(1, options.MaxIterations + 1);
+    history.feval = cell(1, options.MaxIterations + 1);
+    history.x{1} = x;
+    history.feval{1} = feval;
     if options.verbose
-        fprintf('Before any iteration, function value: %f\n', f(x));
+        fprintf('Before any iteration, function value: %f\n', feval);
     end
     
     for i = 1:options.MaxIterations
         % Update the guess range
-        if sign(f(x)) == right_sign
+        if sign(feval) == right_sign
             x_max = x;
         else
             x_min = x;
         end
         x = (x_max + x_min) / 2;
         feval = f(x);
+        history.x{i + 1} = x;
+        history.feval{i + 1} = feval;
 
         if abs(feval) < options.OptimalityTolerance
             stop_reason = 'The function value is smaller than the optimality tolerance.';
@@ -66,4 +73,5 @@ function [x, feval] = bisection_fsolve(f, x0, options)
         end
         fprintf('Stopped after %d iterations because:\n%s\nFinal function value: %f, Solution: %f\n', i, stop_reason, feval, x);
     end
+    stop_iter = i;
 end % end of function

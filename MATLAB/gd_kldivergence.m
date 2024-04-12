@@ -1,4 +1,4 @@
-function [x, feval] = gd_kldivergence(A, b, options)
+function [x, feval, history, stop_iter] = gd_kldivergence(A, b, options)
     %% Use Gradient Descent to solve the KL Divergence optimization problem
     % Author: Midden Vexu
     % Reference: A.-A. Lu, Y. Chen, and X. Gao,
@@ -49,16 +49,22 @@ function [x, feval] = gd_kldivergence(A, b, options)
     v = sqrt(x);
     feval_fun = @(x) sum(A * x - b .* log(A * x));
     previous_feval = feval_fun(x);
+    history.x = cell(1, options.MaxIterations + 1);
+    history.feval = cell(1, options.MaxIterations + 1);
+    history.x{1} = x;
+    history.feval{1} = previous_feval;
     if options.verbose
         fprintf('Before any iteration, Loss: %f\n', previous_feval);
     end
     
     for i = 1:options.MaxIterations
         previous_v = v;
-        gradient = 2 * A' * ones(size(x)) .* v - 2 * A' * (b ./ (A * x)) .* v;
+        gradient = 2 * A' * ones(size(A, 1), 1) .* v - 2 * A' * (b ./ (A * x)) .* v;
         v = v - options.StepSize * gradient;
         x = v .* v;
         feval = feval_fun(x);
+        history.x{i + 1} = x;
+        history.feval{i + 1} = feval;
         
         if abs(feval - previous_feval) < options.OptimalityTolerance
             stop_reason = 'The loss difference is smaller than the optimality tolerance.';
@@ -69,6 +75,8 @@ function [x, feval] = gd_kldivergence(A, b, options)
             v = previous_v;
             x = v .* v;
             feval = feval_fun(x);
+            history.x{i + 1} = x;
+            history.feval{i + 1} = feval;
 
             if options.verbose
                 fprintf('Returned to the previous point as the loss increased. New step size: %f\n', options.StepSize);
@@ -92,4 +100,5 @@ function [x, feval] = gd_kldivergence(A, b, options)
         end
         fprintf('Stopped after %d iterations because:\n%s\nFinal loss: %f\n', i, stop_reason, feval);
     end
-    end % of function
+    stop_iter = i;
+end % of function

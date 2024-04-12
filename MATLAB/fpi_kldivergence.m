@@ -1,4 +1,4 @@
-function [x, feval] = fpi_kldivergence(A, b, options)
+function [x, feval, history, stop_iter] = fpi_kldivergence(A, b, options)
     %% Use Fixed-point Iteration to solve the linear equation problem
     % Author: Midden Vexu
     % The problem is min sum(A * x - b .* log(A * x))  s.t. x >= 0
@@ -46,16 +46,22 @@ function [x, feval] = fpi_kldivergence(A, b, options)
     v = sqrt(x);
     feval_fun = @(x) sum(A * x - b .* log(A * x));
     previous_feval = feval_fun(x);
+    history.x = cell(1, options.MaxIterations + 1);
+    history.feval = cell(1, options.MaxIterations + 1);
+    history.x{1} = x;
+    history.feval{1} = previous_feval;
     if options.verbose
         fprintf('Before any iteration, Loss: %f\n', previous_feval);
     end
     
     for i = 1:options.MaxIterations
         numerator = A' * (b ./ (A * x));
-        denominator = A' * ones(size(x));
+        denominator = A' * ones(size(A, 1), 1);
         v = v .* ((numerator+denominator) ./ (2*denominator));
         x = v .* v;
         feval = feval_fun(x);
+        history.x{i + 1} = x;
+        history.feval{i + 1} = feval;
         
         if abs(feval - previous_feval) < options.OptimalityTolerance
             stop_reason = 'The loss difference is smaller than the optimality tolerance.';
@@ -74,4 +80,5 @@ function [x, feval] = fpi_kldivergence(A, b, options)
         end
         fprintf('Stopped after %d iterations because:\n%s\nFinal loss: %f\n', i, stop_reason, feval);
     end
-    end % of function
+    stop_iter = i;
+end % of function

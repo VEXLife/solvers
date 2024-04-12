@@ -1,4 +1,4 @@
-function [x, feval] = multipupd_quadprognonneg(Q, b, options)
+function [x, feval, history, stop_iter] = multipupd_quadprognonneg(Q, b, options)
     %% Use Multiplicative Update to solve the non-negative quadratic programming problem
     % Author: Midden Vexu
     % Reference: L. Wu, Y. Yang, and H. Liu, “Nonnegative-lasso and application in index tracking,”
@@ -41,6 +41,10 @@ function [x, feval] = multipupd_quadprognonneg(Q, b, options)
     x = options.x0;
     feval_fun = @(x) 0.5 * x' * Q * x + b' * x;
     previous_feval = feval_fun(x);
+    history.x = cell(1, options.MaxIterations + 1);
+    history.feval = cell(1, options.MaxIterations + 1);
+    history.x{1} = x;
+    history.feval{1} = previous_feval;
     if options.verbose
         fprintf('Before any iteration, Loss: %f\n', previous_feval);
     end
@@ -50,6 +54,8 @@ function [x, feval] = multipupd_quadprognonneg(Q, b, options)
         c = Q_neg * x;
         x = (-b + sqrt(b .^ 2 + 4 * a .* c)) ./ (2 * a) .* x;
         feval = feval_fun(x);
+        history.x{i + 1} = x;
+        history.feval{i + 1} = feval;
         
         if abs(feval - previous_feval) < options.OptimalityTolerance
             stop_reason = 'The loss difference is smaller than the optimality tolerance.';
@@ -68,4 +74,5 @@ function [x, feval] = multipupd_quadprognonneg(Q, b, options)
         end
         fprintf('Stopped after %d iterations because:\n%s\nFinal loss: %f\n', i, stop_reason, feval);
     end
-    end % of function
+    stop_iter = i;
+end % of function

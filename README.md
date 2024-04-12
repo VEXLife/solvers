@@ -4,7 +4,7 @@ Here are my implementation of some useful solvers for mainly optimization proble
 
 ## List of solvers
 
-- [x] Equation solver ([MATLAB](./MATLAB/bisection_fsolve.m))
+- [x] Scalar equation solver ([MATLAB](./MATLAB/bisection_fsolve.m))
     - Algorithm: Bisection method
 - [x] Non-negative linear equation solver ([MATLAB](./MATLAB/fpi_kldivergence.m))
     - Optimization object: KL-Divergence
@@ -24,3 +24,8 @@ Here are my implementation of some useful solvers for mainly optimization proble
     - Algorithm: Multiplicative update
 
 **NOTE: Fixed-point iteration may not converge. You'll receive a warning message when using solvers based on this algorithm.**
+
+## Performance
+
+![Non-negative linear equation solvers](./MATLAB/figs/linear_eqn.png)
+![Scalar equation solvers](./MATLAB/figs/scalar_eqn.png)
