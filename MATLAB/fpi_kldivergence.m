@@ -2,6 +2,7 @@ function [x, feval, history, stop_iter] = fpi_kldivergence(A, b, options)
     %% Use Fixed-point Iteration to solve the linear equation problem
     % Author: Midden Vexu
     % The problem is min sum(A * x - b .* log(A * x))  s.t. x >= 0
+    % where all entries of matrix A should be non-negative.
     % INPUTS:
     %   A:          m x n matrix
     %   b:          m x 1 vector
@@ -12,7 +13,7 @@ function [x, feval, history, stop_iter] = fpi_kldivergence(A, b, options)
     %       verbose:                logical, whether to print the loss at each iteration, default 1
     
     arguments
-        A double {mustBeNumeric}
+        A double {mustBeNumeric, mustBeNonnegative}
         b double {mustBeNumeric, mustBeVector}
         options.x0 double {mustBePositive, mustBeVector}...
             = ones(size(A,2),1)

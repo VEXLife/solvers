@@ -18,21 +18,11 @@ classdef LinearEquationSolverTest < matlab.unittest.TestCase
             rng(1);
 
             % Generate a non-negative least squares problem
-            no_rx_antennas = 8;
-            no_tx_horizontal_antennas = 16;
-            no_tx_vertical_antennas = 8;
-            no_tx_horizontal_beams = 32;
-            no_tx_vertical_beams = 16;
-            U = dftmtx(no_rx_antennas) / sqrt(no_rx_antennas);
-            v_h = dftmtx(no_tx_horizontal_beams) / sqrt(no_tx_horizontal_antennas);
-            v_h = v_h(1:no_tx_horizontal_antennas, :);
-            v_v = dftmtx(no_tx_vertical_beams) / sqrt(no_tx_vertical_antennas);
-            v_v = v_v(1:no_tx_vertical_antennas, :);
-            V = kron(v_h, v_v);
-
-            t_a = abs(U' * U) .^2;
-            t_f = abs(V' * V) .^2;
-            testCase.A=kron(t_f',t_a);
+            A_row = [1 rand(1,testCase.problemsettings.n - 1) * 200];
+            A_row(abs(A_row)>1)=0;
+            A_col = [1 rand(1,testCase.problemsettings.m - 1) * 200];
+            A_col(abs(A_col)>1)=0;
+            testCase.A=toeplitz(A_col, A_row);
             testCase.x=rand(testCase.problemsettings.n, 1) * 200;
             testCase.x(testCase.x>1)=0; % Make the solution sparse
             testCase.b=testCase.A*testCase.x;
@@ -51,32 +41,38 @@ classdef LinearEquationSolverTest < matlab.unittest.TestCase
         % Test methods
         
         function projectedGradientDescentTest(testCase)
-            sol = pgd_lsqnonneg(testCase.A, testCase.b);
+            sol = pgd_lsqnonneg(testCase.A, testCase.b,...
+                OptimalityTolerance=1e-4);
             verifySolution(testCase, sol);
         end
 
         function quadprogToLeastSquareWrapperTest(testCase)
-            sol = quadprog_to_lsq_wrapper(testCase.A, testCase.b, @pgd_quadprognonneg);
+            sol = quadprog_to_lsq_wrapper(testCase.A, testCase.b,...
+                @pgd_quadprognonneg, 0, OptimalityTolerance=1e-4);
             verifySolution(testCase, sol);
         end
 
         function multiplicativeUpdateTest(testCase)
-            sol = quadprog_to_lsq_wrapper(testCase.A, testCase.b, @multipupd_quadprognonneg);
+            sol = quadprog_to_lsq_wrapper(testCase.A, testCase.b,...
+                @multipupd_quadprognonneg, 0, OptimalityTolerance=1e-4);
             verifySolution(testCase, sol);
         end
 
         function fixedPointIterationKLDivergenceTest(testCase)
-            sol = fpi_kldivergence(testCase.A, testCase.b);
+            sol = fpi_kldivergence(testCase.A, testCase.b,...
+                OptimalityTolerance=1e-3);
             verifySolution(testCase, sol);
         end
 
         function fixedPointIterationLeastSquareTest(testCase)
-            sol = fpi_lsqnonneg(testCase.A, testCase.b);
+            sol = fpi_lsqnonneg(testCase.A, testCase.b,...
+                OptimalityTolerance=1e-3);
             verifySolution(testCase, sol);
         end
 
         function gradientDescentKLDivergenceTest(testCase)
-            sol = gd_kldivergence(testCase.A, testCase.b);
+            sol = gd_kldivergence(testCase.A, testCase.b,...
+                OptimalityTolerance=1e-3);
             verifySolution(testCase, sol);
         end
     end
