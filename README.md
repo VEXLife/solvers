@@ -1,4 +1,5 @@
 # Solvers
+[![Test](https://github.com/VEXLife/Solvers/actions/workflows/matlab-ci.yml/badge.svg)](https://github.com/VEXLife/Solvers/actions/workflows/matlab-ci.yml)
 
 Here are my implementation of some useful solvers for mainly optimization problems in different programming languages. I hope you find them helpful.
 
