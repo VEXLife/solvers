@@ -47,8 +47,3 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: VEXLife/Solvers
-      
-      # Pack and publish a release
-      - name: Pack and publish a release
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
