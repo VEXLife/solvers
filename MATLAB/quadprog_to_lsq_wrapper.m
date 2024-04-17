@@ -6,13 +6,13 @@ function [x, feval, history, stop_iter] = quadprog_to_lsq_wrapper(A, b, quadprog
     % and then call the quadprog solver.
     % 
     % Inputs:
-    % - A: matrix
-    % - b: vector
-    % - quadprog_solver_func: function handle to the quadprog solver
-    % 
-    % Outputs:
-    % - x: solution to the least squares problem
-    % - feval: struct with information about the evaluation of the solver
+    %   A:                      matrix
+    %   b:                      vector
+    %   quadprog_solver_func:   function handle to the quadprog solver
+    %   lambd:                  regularization parameter, default 0
+    %                           0 for least squares, >0 for lasso
+    %   varargin:               additional arguments for the quadprog solver
+    % For more information about the arguments and outputs, refer to the solvers themselves.
 
     % Set default lambda to 0
     if nargin < 4

@@ -16,6 +16,9 @@ function [x, feval, history, stop_iter] = bisection_fsolve(f, x0, options)
     % OUTPUTS:
     %   x:          scalar, solution to the equation
     %   feval:      scalar, final function value at x
+    %   history:    struct of two cells, x and feval,
+    %               with the first entry being the initial values
+    %   stop_iter:  integer, number of iterations before stopping
 
     arguments
         f function_handle

@@ -10,6 +10,12 @@ function [x, feval, history, stop_iter] = fpi_lsqnonneg(A, b, options)
     %       MaxIterations:          integer, maximum number of iterations, default 1000
     %       OptimalityTolerance:    double, tolerance for the optimality condition, default 1e-6
     %       verbose:                logical, whether to print the loss at each iteration, default 1
+    % OUTPUTS:
+    %   x:          scalar, solution to the equation
+    %   feval:      scalar, final function value at x
+    %   history:    struct of two cells, x and feval,
+    %               with the first entry being the initial values
+    %   stop_iter:  integer, number of iterations before stopping
     
     arguments
         A double {mustBeNumeric}

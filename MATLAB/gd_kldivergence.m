@@ -17,6 +17,12 @@ function [x, feval, history, stop_iter] = gd_kldivergence(A, b, options)
     %       StepSize:               double, initial step size, default 1
     %       StepSizeMinimum:        double, stops if the step size is smaller than this value, default 1e-4
     %       StepSizeDiscount:       double, discount factor for the step size, default 5e-1
+    % OUTPUTS:
+    %   x:          scalar, solution to the equation
+    %   feval:      scalar, final function value at x
+    %   history:    struct of two cells, x and feval,
+    %               with the first entry being the initial values
+    %   stop_iter:  integer, number of iterations before stopping
     
     arguments
         A double {mustBeNumeric, mustBeNonnegative}

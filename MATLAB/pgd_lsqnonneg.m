@@ -12,6 +12,12 @@ function [x, feval, history, stop_iter] = pgd_lsqnonneg(A, b, options)
     %       OptimalityTolerance:    double, tolerance for the optimality condition, default 1e-6
     %       LowerBound:             double, can be used to tolerate machine precision, default 0
     %       verbose:                logical, whether to print the loss at each iteration, default 1
+    % OUTPUTS:
+    %   x:          scalar, solution to the equation
+    %   feval:      scalar, final function value at x
+    %   history:    struct of two cells, x and feval,
+    %               with the first entry being the initial values
+    %   stop_iter:  integer, number of iterations before stopping
 
     arguments
         A double {mustBeNumeric}
