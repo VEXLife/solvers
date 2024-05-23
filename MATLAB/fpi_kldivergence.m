@@ -37,20 +37,16 @@ function [x, feval, history, stop_iter] = fpi_kldivergence(A, b, options)
         'The number of rows of A must be equal to the length of b');
     assert(size(A, 2) == numel(options.x0),...
         'The number of columns of A must be equal to the length of x0');
-        warning('MATLAB:FixedPointIterationMayDiverge',...
-            "Fixed-point iteration algorithm may diverge with a bad initial guess, you'd better switch to more robust algorithms."); 
     stop_reason = 'Unexpected stop';
 
-    % Take the original problem as min sum(A * x - b .* log(A * x)) s.t. x = v .* v
-    % and substituting x = v .* v, we get an unconstrained problem
-    % min sum(A(v .* v) - b .* log(A(v .* v)))
-    % whose derivative is 2 * ((A'*vector(1)) .* v - (A' * (b ./ (A * v))) .* v)
+    % Take the original problem as min sum(A * x - b .* log(A * x)) s.t. x >= 0
+    % whose derivative is 2 * (A'*vector(1) - A' * (b ./ (A * x)))
     % where vector(1) is a vector of ones;
-    % Let the derivative be 0, namely (A'*vector(1)) .* v = (A' * (b ./ (A * v))) .* v
-    % and we obtain the iteration step v = (A' * (b ./ (A * v))) ./ (A'*vector(1)) .* v
-    % Here we interpolated between the two iterations to mitigate divergence
+    % Let the derivative be 0, namely A'*vector(1) = A' * (b ./ (A * x))
+    % and multiply x element-wise on both sides, we get A'*vector(1) .* x = A' * (b ./ (A * x)) .* x
+    % Then we obtain the iteration step x = (A' * (b ./ (A * x))) ./ (A'*vector(1)) .* x
+    % Here we interpolated between the two iterations to ensure the convergence.
     x = options.x0;
-    v = sqrt(x);
     feval_fun = @(x) sum(A * x - b .* log(A * x));
     previous_feval = feval_fun(x);
     history.x = cell(1, options.MaxIterations + 1);
@@ -64,8 +60,7 @@ function [x, feval, history, stop_iter] = fpi_kldivergence(A, b, options)
     for i = 1:options.MaxIterations
         numerator = A' * (b ./ (A * x));
         denominator = A' * ones(size(A, 1), 1);
-        v = v .* ((numerator+denominator) ./ (2*denominator));
-        x = v .* v;
+        x = x .* ((numerator+denominator) ./ (2*denominator));
         feval = feval_fun(x);
         history.x{i + 1} = x;
         history.feval{i + 1} = feval;

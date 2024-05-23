@@ -36,14 +36,11 @@ function [x, feval, history, stop_iter] = fpi_lsqnonneg(A, b, options)
         'The number of rows of A must be equal to the length of b');
     assert(size(A, 2) == numel(options.x0),...
         'The number of columns of A must be equal to the length of x0');
-        warning('MATLAB:FixedPointIterationMayDiverge',...
-            "Fixed-point iteration algorithm may diverge with a bad initial guess, you'd better switch to more robust algorithms."); 
     stop_reason = 'Unexpected stop';
 
     % Similar to KL Divergence.
-    % The derivative is 4(A' * (A * x - b)) .* v where x = v .* v
+    % The derivative is 4(A' * (A * x - b))
     x = options.x0;
-    v = sqrt(x);
     feval_fun = @(x) norm(A * x - b, 2);
     previous_feval = feval_fun(x);
     history.x = cell(1, options.MaxIterations + 1);
@@ -57,8 +54,7 @@ function [x, feval, history, stop_iter] = fpi_lsqnonneg(A, b, options)
     for i = 1:options.MaxIterations
         numerator = A' * b;
         denominator = A' * (A * x);
-        v = v .* ((numerator+denominator) ./ (2*denominator));
-        x = v .* v;
+        x = x .* ((numerator+denominator) ./ (2*denominator));
         feval = feval_fun(x);
         history.x{i + 1} = x;
         history.feval{i + 1} = feval;
