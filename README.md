@@ -41,8 +41,6 @@ Here are my implementation of some useful solvers for mainly optimization proble
     - Algorithm: Multiplicative update
     - Self-contained
 
-**NOTE: Fixed-point iteration may not converge. You'll receive a warning message when using solvers based on this algorithm.**
-
 ## Performance
 
 ![Non-negative linear system solvers](./MATLAB/figs/linear_eqn.png)
