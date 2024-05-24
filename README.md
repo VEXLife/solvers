@@ -41,6 +41,12 @@ Here are my implementation of some useful solvers for mainly optimization proble
     - Algorithm: Multiplicative update
     - Self-contained
 
+## Usage
+
+### MATLAB
+
+Clone the repository or download the source code from release and add the path to the MATLAB environment. Alternatively, you can add this repository as a Git submodule to your project.
+
 ## Performance
 
 ![Non-negative linear system solvers](./MATLAB/figs/linear_eqn.png)
