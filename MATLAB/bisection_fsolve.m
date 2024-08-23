@@ -40,6 +40,7 @@ function [x, feval, history, stop_iter] = bisection_fsolve(f, x0, options)
     right_sign = sign(f(x_max));
 
     feval = f(x);
+    assert(isreal(feval), 'Bisection method only works for real-valued functions.');
     history.x = cell(1, options.MaxIterations + 1);
     history.feval = cell(1, options.MaxIterations + 1);
     history.x{1} = x;
