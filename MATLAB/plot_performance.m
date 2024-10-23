@@ -7,23 +7,6 @@ rng(1);
 a = randn(30, 3) .^ 2;
 x = rand(3, 1);
 b = a * x;
-[m, n] = size(a);
-
-assert(m == length(b), 'The first dimension of matrix a must match the length of vector b.');
-
-disp("The problem is");
-for i = 1:m
-    equation = '';
-    for j = 1:n - 1
-        equation = sprintf('%s%d * x%d + ', equation, a(i, j), j);
-    end
-    equation = sprintf('%s%d * x%d = b%d', equation, a(i, n), n, i);
-    disp(equation);
-end
-disp("and a possible solution is");
-for j = 1:n
-    fprintf('x%d = %f\n', j, x(j));
-end
 
 % Solve the problem and plot
 h=figure;
@@ -39,13 +22,13 @@ plot(ax,0:stop_iter, cell2mat(history.feval) + sum(b .* log(b) - b),"DisplayName
 plot(ax,0:stop_iter, cell2mat(history.feval) + sum(b .* log(b) - b),"DisplayName","KL Divergence Fixed-point Iteration");
 [~, ~, history, stop_iter] = fpi_lsqnonneg(a, b);
 plot(ax,0:stop_iter, cell2mat(history.feval),"DisplayName","Least Squares Fixed-point Iteration");
-xlim(ax,[0,15]);
-title(ax,"Performance of the linear equation solvers");
+ax.YScale = "log";
+title(ax,"Performance of the nonnegative linear equation solvers");
 xlabel(ax,"Iteration");
 ylabel(ax,"Loss");
 legend(ax);
 hold(ax,"off");
-saveas(h,"figs/linear_eqn.png");
+saveas(h,"figs/nonnegative_linear_eqn.png");
 
 % Generate a scalar equation problem
 a = randn(1, 1);
@@ -64,3 +47,28 @@ ylabel(ax2,"Function value");
 legend(ax2);
 hold(ax2,"off");
 saveas(h2,"figs/scalar_eqn.png");
+
+% Generate a non-negative linear equation problem
+rng(1);
+l = randn(30, 30);
+a = l' * l;
+x = randn(30, 1);
+b = a * x;
+
+% Solve the problem and plot
+h3=figure;
+ax3=axes(h3);
+hold(ax3,"on");
+[~, ~, history, stop_iter] = jacobi_lsq(a, b);
+plot(ax3,0:stop_iter, cell2mat(history.feval),"DisplayName","Jacobi");
+[~, ~, history, stop_iter] = gauss_seidel_lsq(a, b);
+plot(ax3,0:stop_iter, cell2mat(history.feval),"DisplayName","Gauss-Seidel");
+[~, ~, history, stop_iter] = sor_lsq(a, b);
+plot(ax3,0:stop_iter, cell2mat(history.feval),"DisplayName","SOR");
+ax3.YScale = "log";
+title(ax3,"Performance of the iterative linear equation solvers");
+xlabel(ax3,"Iteration");
+ylabel(ax3,"Loss");
+legend(ax3);
+hold(ax3,"off");
+saveas(h,"figs/linear_eqn.png");
