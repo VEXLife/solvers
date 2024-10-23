@@ -71,4 +71,4 @@ xlabel(ax3,"Iteration");
 ylabel(ax3,"Loss");
 legend(ax3);
 hold(ax3,"off");
-saveas(h,"figs/linear_eqn.png");
+saveas(h3,"figs/linear_eqn.png");

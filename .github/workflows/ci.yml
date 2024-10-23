@@ -39,6 +39,7 @@ jobs:
         uses: matlab-actions/run-tests@v2.1.1
         with:
           source-folder: MATLAB/src
+          select-by-folder: MATLAB/tests
           code-coverage-cobertura: code-coverage/coverage.xml
 
       # Upload code coverage report
