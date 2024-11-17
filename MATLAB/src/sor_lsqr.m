@@ -1,5 +1,5 @@
-function [x, feval, history, stop_iter] = jacobi_lsq(A, b, options)
-    %% Use Jacobi Fixed-Point Iteration method to solve least squares problem
+function [x, feval, history, stop_iter] = sor_lsqr(A, b, options)
+    %% Use SOR(Successive Over-Relaxation) Fixed-Point Iteration method to solve least squares problem
     % Author: Midden Vexu
     % The problem is min ||Ax - b||_2^2
     % where A is a matrix and b is a vector.
@@ -28,7 +28,7 @@ function [x, feval, history, stop_iter] = jacobi_lsq(A, b, options)
         options.OptimalityTolerance double {mustBePositive}...
             = 1e-6
         options.dampingCoeff double...
-            {mustBeNonnegative, mustBeLessThanOrEqual(options.dampingCoeff, 1)}...
+            {mustBeNonnegative, mustBeLessThanOrEqual(options.dampingCoeff, 2)}...
             = 0.5
         options.verbose logical...
             {mustBeNumericOrLogical,mustBeMember(options.verbose, [0, 1])}...
@@ -49,11 +49,11 @@ function [x, feval, history, stop_iter] = jacobi_lsq(A, b, options)
         'The number of columns of A must be equal to the length of x0');
     stop_reason = 'Unexpected stop';
 
-    n = size(A, 2);
     x = options.x0;
+    d = diag(diag(A));
+    l = tril(A, -1);
+    u = triu(A, 1);
     feval_fun = @(x) norm(A * x - b, 2);
-    d = eye(n) .* A;
-    r = A - d;
     previous_feval = feval_fun(x);
     history.x = cell(1, options.MaxIterations + 1);
     history.feval = cell(1, options.MaxIterations + 1);
@@ -64,7 +64,7 @@ function [x, feval, history, stop_iter] = jacobi_lsq(A, b, options)
     end
     
     for i = 1:options.MaxIterations
-        x = options.dampingCoeff * x + (1 - options.dampingCoeff) * (d \ (b - r * x));
+        x = (d + options.dampingCoeff * l) \ ((1 - options.dampingCoeff) * d - options.dampingCoeff * u) * x + options.dampingCoeff * ((d + options.dampingCoeff * l) \ b);
 
         feval = feval_fun(x);
         history.x{i + 1} = x;

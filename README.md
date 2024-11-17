@@ -41,13 +41,13 @@ Here are my implementation of some useful solvers for mainly optimization proble
 - [x] Non-negative quadratic programming solver ([MATLAB](./MATLAB/src/multipupd_quadprognonneg.m))
     - Algorithm: Multiplicative update
     - Self-contained
-- [x] Linear system solver ([MATLAB](./MATLAB/src/jacobi_lsq.m))
+- [x] Linear system solver ([MATLAB](./MATLAB/src/jacobi_lsqr.m))
     - Algorithm: Jacobi iteration
     - Self-contained
-- [x] Linear system solver ([MATLAB](./MATLAB/src/gauss_seidel_lsq.m))
+- [x] Linear system solver ([MATLAB](./MATLAB/src/gauss_seidel_lsqr.m))
     - Algorithm: Gauss-Seidel iteration
     - Self-contained
-- [x] Linear system solver ([MATLAB](./MATLAB/src/sor_lsq.m))
+- [x] Linear system solver ([MATLAB](./MATLAB/src/sor_lsqr.m))
     - Algorithm: SOR iteration
     - Self-contained
 

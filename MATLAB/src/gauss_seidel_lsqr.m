@@ -1,5 +1,5 @@
-function [x, feval, history, stop_iter] = sor_lsq(A, b, options)
-    %% Use SOR(Successive Over-Relaxation) Fixed-Point Iteration method to solve least squares problem
+function [x, feval, history, stop_iter] = gauss_seidel_lsqr(A, b, options)
+    %% Use Gauss-Seidel Fixed-Point Iteration method to solve least squares problem
     % Author: Midden Vexu
     % The problem is min ||Ax - b||_2^2
     % where A is a matrix and b is a vector.
@@ -28,7 +28,7 @@ function [x, feval, history, stop_iter] = sor_lsq(A, b, options)
         options.OptimalityTolerance double {mustBePositive}...
             = 1e-6
         options.dampingCoeff double...
-            {mustBeNonnegative, mustBeLessThanOrEqual(options.dampingCoeff, 2)}...
+            {mustBeNonnegative, mustBeLessThanOrEqual(options.dampingCoeff, 1)}...
             = 0.5
         options.verbose logical...
             {mustBeNumericOrLogical,mustBeMember(options.verbose, [0, 1])}...
@@ -50,8 +50,7 @@ function [x, feval, history, stop_iter] = sor_lsq(A, b, options)
     stop_reason = 'Unexpected stop';
 
     x = options.x0;
-    d = diag(diag(A));
-    l = tril(A, -1);
+    d_l = tril(A, 0);
     u = triu(A, 1);
     feval_fun = @(x) norm(A * x - b, 2);
     previous_feval = feval_fun(x);
@@ -64,7 +63,7 @@ function [x, feval, history, stop_iter] = sor_lsq(A, b, options)
     end
     
     for i = 1:options.MaxIterations
-        x = (d + options.dampingCoeff * l) \ ((1 - options.dampingCoeff) * d - options.dampingCoeff * u) * x + options.dampingCoeff * ((d + options.dampingCoeff * l) \ b);
+        x = options.dampingCoeff * x + (1 - options.dampingCoeff) * (d_l \ b - d_l \ (u * x));
 
         feval = feval_fun(x);
         history.x{i + 1} = x;

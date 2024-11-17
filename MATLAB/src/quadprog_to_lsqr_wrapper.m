@@ -1,4 +1,4 @@
-function [x, feval, history, stop_iter] = quadprog_to_lsq_wrapper(A, b, quadprog_solver_func, lambd, varargin)
+function [x, feval, history, stop_iter] = quadprog_to_lsqr_wrapper(A, b, quadprog_solver_func, lambd, varargin)
     % Wrapper for quadprog to solve the nonnegative least squares problem
     % min_x 1/2*||Ax - b||_2^2 + lambd*||x||_1 s.t. x >= 0
     % by converting it into

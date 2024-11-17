@@ -47,13 +47,13 @@ classdef NonnegativeLinearEquationSolverTest < matlab.unittest.TestCase
         end
 
         function quadprogToLeastSquareWrapperTest(testCase)
-            sol = quadprog_to_lsq_wrapper(testCase.A, testCase.b,...
+            sol = quadprog_to_lsqr_wrapper(testCase.A, testCase.b,...
                 @pgd_quadprognonneg, 0, OptimalityTolerance=1e-4);
             verifySolution(testCase, sol);
         end
 
         function multiplicativeUpdateTest(testCase)
-            sol = quadprog_to_lsq_wrapper(testCase.A, testCase.b,...
+            sol = quadprog_to_lsqr_wrapper(testCase.A, testCase.b,...
                 @multipupd_quadprognonneg, 0, OptimalityTolerance=1e-4);
             verifySolution(testCase, sol);
         end

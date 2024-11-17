@@ -36,19 +36,19 @@ classdef LinearEquationSolverTest < matlab.unittest.TestCase
         % Test methods
         
         function jacobiTest(testCase)
-            sol = jacobi_lsq(testCase.A, testCase.b,...
+            sol = jacobi_lsqr(testCase.A, testCase.b,...
                 OptimalityTolerance=1e-4, MaxIterations=2000);
             verifySolution(testCase, sol);
         end
 
         function gaussSeidelTest(testCase)
-            sol = gauss_seidel_lsq(testCase.A, testCase.b,...
+            sol = gauss_seidel_lsqr(testCase.A, testCase.b,...
                 OptimalityTolerance=1e-4, MaxIterations=2000);
             verifySolution(testCase, sol);
         end
 
         function sorTest(testCase)
-            sol = sor_lsq(testCase.A, testCase.b,...
+            sol = sor_lsqr(testCase.A, testCase.b,...
                 OptimalityTolerance=1e-4, MaxIterations=2000);
             verifySolution(testCase, sol);
         end
