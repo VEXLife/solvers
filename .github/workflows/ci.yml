@@ -30,7 +30,7 @@ jobs:
 
       # Open the MATLAB project
       - name: Open MATLAB project
-        uses: matlab-actions/run-command@v2.2.1
+        uses: matlab-actions/run-command@v2.2.2
         with:
           command: openProject('MATLAB/Solvers.prj');
 
